@@ -90,7 +90,7 @@ final class MySlitherJFrame extends JFrame {
     private final JTextField server, name;
     private final JComboBox<String> snake;
     private final JCheckBox useRandomServer;
-    private final JToggleButton connect;
+    private final JToggleButton connect, botToggleButton;
     private final JLabel rank, kills;
     private final JSplitPane rightSplitPane, fullSplitPane;
     private final JTextArea log;
@@ -106,6 +106,9 @@ final class MySlitherJFrame extends JFrame {
     private final Player player;
     MySlitherModel model;
     final Object modelLock = new Object();
+
+    // Extension instance variables
+    private boolean botEnabled;
 
     MySlitherJFrame() {
         super("MySlither");
@@ -176,6 +179,9 @@ final class MySlitherJFrame extends JFrame {
             }
         });
 
+        botToggleButton = new JToggleButton();
+        botToggleButton.addActionListener(a -> {toggleBotEnabled();});
+
         rank = new JLabel();
 
         kills = new JLabel();
@@ -206,6 +212,9 @@ final class MySlitherJFrame extends JFrame {
             new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
         settings.add(rank,
             new GridBagConstraints(5, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+        // Extension
+        settings.add(botToggleButton,
+            new GridBagConstraints(6, 1, 1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 60, 2, 2), 0, 0));
 
         JComponent upperRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         upperRow.add(settings);
@@ -275,6 +284,9 @@ final class MySlitherJFrame extends JFrame {
         validate();
         startTime = System.currentTimeMillis();
         setStatus(Status.DISCONNECTED);
+
+        // Set bot mode to disabled
+        botEnabled = false;
 
         updateTimer = new Timer();
         updateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -384,6 +396,7 @@ final class MySlitherJFrame extends JFrame {
         connect.setText(status.buttonText);
         connect.setSelected(status.buttonSelected);
         connect.setEnabled(status.buttonEnabled);
+        botToggleButton.setText("Toggle bot");
         server.setEnabled(status.allowModifyData && !useRandomServer.isSelected());
         useRandomServer.setEnabled(status.allowModifyData);
         name.setEnabled(status.allowModifyData);
@@ -428,6 +441,15 @@ final class MySlitherJFrame extends JFrame {
     void setHighscoreData(int row, String name, int length, boolean highlighted) {
         highscoreList.setValueAt(highlighted ? "<html><b>" + length + "</b></html>" : length, row, 0);
         highscoreList.setValueAt(highlighted ? "<html><b>" + name + "</b></html>" : name, row, 1);
+    }
+
+    /**
+     * This function toggles botEnabled's state.
+     */
+    public void toggleBotEnabled()
+    {
+        botEnabled = !botEnabled;
+        setStatus(status);
     }
 
     private enum Status {
