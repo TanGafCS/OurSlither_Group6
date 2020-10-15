@@ -452,6 +452,11 @@ final class MySlitherJFrame extends JFrame {
         setStatus(status);
     }
 
+    public boolean isBotEnabled()
+    {
+        return botEnabled;
+    }
+
     private enum Status {
         DISCONNECTED("connect", false, true, true),
         CONNECTING("connecting...", true, true, false),

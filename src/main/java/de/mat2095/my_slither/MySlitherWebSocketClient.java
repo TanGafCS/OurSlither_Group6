@@ -51,6 +51,119 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
     void sendData(Player.Wish wish) {
 
+        // if bot is enabled, run sendBotData function
+        if (view.isBotEnabled() == true)
+        {
+            sendBotData(wish);
+            return;
+        }
+
+        if (wish.angle != null) {
+            angleToBeSent = (byte) (wish.angle * 251 / PI2);
+        }
+        if (angleToBeSent != lastAngleContent && System.currentTimeMillis() - lastAngleTime > 100) {
+            lastAngleTime = System.currentTimeMillis();
+            lastAngleContent = angleToBeSent;
+            send(new byte[]{angleToBeSent});
+        }
+
+        if (wish.boost != null && wish.boost != lastBoostContent) {
+            lastBoostContent = wish.boost;
+            send(wish.boost ? DATA_BOOST_START : DATA_BOOST_STOP);
+        }
+
+        if (!waitingForPong && System.currentTimeMillis() - lastPingTime > 250) {
+            lastPingTime = System.currentTimeMillis();
+            waitingForPong = true;
+            send(DATA_PING);
+        }
+    }
+
+    void sendBotData(Player.Wish wish)
+    {
+        // Get Bot's next position. Maybe rework this into a tree-structured bot? For now, find closest food and get there.
+        int targetFoodX = 0;
+        int targetFoodY = 0;
+
+        // Start at max distance and find the closest one.
+        double minimumDistance = Double.MAX_VALUE;
+        // This deadzone ensures we don't go for food that's too close to us, putting us in circular paths.
+        double deadZone = 0.2;
+
+        double snakeX = model.snake.x;
+        double snakeY = model.snake.y;
+
+        System.out.println("snake X: " + snakeX );
+        System.out.println("snake Y: " + snakeY );
+
+        for (Food food : model.foods.values()) {
+            // Pythagorean theorem
+            double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
+            double yDistSqr = Math.pow(Math.abs(snakeY - food.y), 2);
+            double distance = Math.sqrt(xDistSqr + yDistSqr);
+            if (distance < minimumDistance && minimumDistance > deadZone)
+            {
+                minimumDistance = distance;
+                targetFoodX = food.x;
+                targetFoodY = food.y;
+            }
+        }
+
+        double angles = 0;
+
+        // displacement on x axis
+        double xDisplacement = targetFoodX - snakeX;
+
+        // displacement on y axis
+        double yDisplacement = targetFoodY - snakeY;
+
+        if (xDisplacement == 0)
+        {
+            xDisplacement += Double.MIN_VALUE;
+        }
+        
+        if (yDisplacement == 0)
+        {
+            xDisplacement += Double.MIN_VALUE;
+        }
+
+        //double totalDisplacement = xDisplacement + yDisplacement;
+        //double ratio = xDisplacement / totalDisplacement;
+
+        double additiveAngle = Math.atan(yDisplacement/xDisplacement);
+
+        // If positive x, angle must be 0 <= angle <= 180
+        // if positive y, angle must be 270 <= angle 90
+        boolean posiX = (xDisplacement > 0);
+        boolean posiY = (yDisplacement < 0);      // "up" is towards 0.
+
+        int multiplier = 0;
+
+        if (posiX)
+        {
+            if (posiY)
+            {
+                multiplier = 3;
+            }
+            else // posiX and !posiY
+            {
+                multiplier = 0;
+            }
+        }
+        else
+        {
+            if (posiY)
+            {
+                multiplier = 2;
+            }
+            else // !posiX and !posiY
+            {
+                multiplier = 1;
+            }
+        }
+
+        wish.angle = (PI2 / 4 ) * multiplier + additiveAngle;
+
         if (wish.angle != null) {
             angleToBeSent = (byte) (wish.angle * 251 / PI2);
         }

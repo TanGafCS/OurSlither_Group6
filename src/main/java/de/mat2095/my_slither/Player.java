@@ -15,8 +15,8 @@ abstract class Player {
 
     static class Wish {
 
-        final Double angle;
-        final Boolean boost;
+        Double angle;
+        Boolean boost;
 
         Wish(Double angle, Boolean boost) {
             if (angle != null && (angle < 0 || angle >= PI2)) {
