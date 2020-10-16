@@ -176,9 +176,18 @@ final class MySlitherCanvas extends JPanel {
             g.drawOval(-64, -64, model.gameRadius * 2 + 128, model.gameRadius * 2 + 128);
             g.setStroke(oldStroke);
 
-            g.setColor(FOOD_COLOR);
             model.foods.values().forEach(food -> {
                 double foodRadius = food.getRadius();
+                if (foodRadius > 5) //statements to change the visuals of the
+                {
+                     
+                    g.setColor(PREY_COLOR); // variable names will need to be changed
+                    if (foodRadius > 6)
+                    {   
+                        g.setColor(SNAKE_COLOR);
+                    }
+                }
+               else g.setColor(FOOD_COLOR);
                 g.fill(new Ellipse2D.Double(food.x - foodRadius, food.y - foodRadius, foodRadius * 2, foodRadius * 2));
             });
 
