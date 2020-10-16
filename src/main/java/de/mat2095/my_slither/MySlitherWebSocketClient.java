@@ -87,42 +87,50 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
         // Start at max distance and find the closest one.
         double minimumDistance = Double.MAX_VALUE;
-        // This deadzone ensures we don't go for food that's too close to us, putting us in circular paths.
-        double deadZone = 0.2;
 
         double snakeX = model.snake.x;
         double snakeY = model.snake.y;
 
         for (Food food : model.foods.values()) {
-            // Pythagorean theorem
-            double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
-            double yDistSqr = Math.pow(Math.abs(snakeY - food.y), 2);
-            double distance = Math.sqrt(xDistSqr + yDistSqr);
-            if (distance < minimumDistance && minimumDistance > deadZone)
+            
+            // Check if the food is within the graph
+            // displacement on x axis
+            double xDisplacement = food.x - snakeX;
+            // displacement on y axis
+            double yDisplacement = food.y - snakeY;
+
+            double xResult = graphFunction(xDisplacement);
+
+            if (yDisplacement >= xResult)
             {
-                minimumDistance = distance;
-                targetFoodX = food.x;
-                targetFoodY = food.y;
+                // Pythagorean theorem
+                double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
+                double yDistSqr = Math.pow(Math.abs(snakeY - food.y), 2);
+                double distance = Math.sqrt(xDistSqr + yDistSqr);
+                if (distance < minimumDistance)
+                {
+                    minimumDistance = distance;
+                    targetFoodX = food.x;
+                    targetFoodY = food.y;
+                }
             }
+
         }
 
-        double angles = 0;
+        System.out.println(targetFoodX + " " + targetFoodY);
+        //double angles = 0;
 
         // displacement on x axis
         double xDisplacement = targetFoodX - snakeX;
-
         // displacement on y axis
         double yDisplacement = targetFoodY - snakeY;
 
+        // Avoid dividing by zero
         if (xDisplacement == 0)
-        {
             xDisplacement += Double.MIN_VALUE;
-        }
-        
+
         if (yDisplacement == 0)
-        {
             xDisplacement += Double.MIN_VALUE;
-        }
 
         //double totalDisplacement = xDisplacement + yDisplacement;
         //double ratio = xDisplacement / totalDisplacement;
@@ -180,6 +188,13 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             waitingForPong = true;
             send(DATA_PING);
         }
+    }
+
+    private double graphFunction(double xDisplacement)
+    {
+        double scalar = 1;
+
+        return Math.log(scalar * Math.abs(xDisplacement) + 1);
     }
 
     @Override
