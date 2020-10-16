@@ -93,9 +93,6 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         double snakeX = model.snake.x;
         double snakeY = model.snake.y;
 
-        System.out.println("snake X: " + snakeX );
-        System.out.println("snake Y: " + snakeY );
-
         for (Food food : model.foods.values()) {
             // Pythagorean theorem
             double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
