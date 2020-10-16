@@ -85,11 +85,17 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         int targetFoodX = 0;
         int targetFoodY = 0;
 
+        int oldTargetFoodX = 0;
+        int oldTargetFoodY = 0;
+        double oldMinimumDistance = Double.MAX_VALUE;
+
         // Start at max distance and find the closest one.
         double minimumDistance = Double.MAX_VALUE;
 
         double snakeX = model.snake.x;
         double snakeY = model.snake.y;
+
+        boolean foundOptimalFood = false;
 
         for (Food food : model.foods.values()) {
             
@@ -101,23 +107,39 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
             double xResult = graphFunction(xDisplacement);
 
-            if (yDisplacement >= xResult)
+            
+            // Pythagorean theorem
+            double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
+            double yDistSqr = Math.pow(Math.abs(snakeY - food.y), 2);
+            double distance = Math.sqrt(xDistSqr + yDistSqr);
+            if (distance < minimumDistance)
             {
-                // Pythagorean theorem
-                double xDistSqr = Math.pow(Math.abs(snakeX - food.x), 2);
-                double yDistSqr = Math.pow(Math.abs(snakeY - food.y), 2);
-                double distance = Math.sqrt(xDistSqr + yDistSqr);
-                if (distance < minimumDistance)
+                if (yDisplacement >= xResult)
                 {
                     minimumDistance = distance;
                     targetFoodX = food.x;
                     targetFoodY = food.y;
+
+                    foundOptimalFood = true;
+                }
+
+                if (distance < oldMinimumDistance)
+                {
+                    oldMinimumDistance = distance;
+                    oldTargetFoodX = food.x;
+                    oldTargetFoodY = food.y;
                 }
             }
-
         }
 
-        System.out.println(targetFoodX + " " + targetFoodY);
+        if (!foundOptimalFood)
+        {
+            System.out.println("we're rnning");
+            targetFoodX = oldTargetFoodX;
+            targetFoodY = oldTargetFoodY;
+        }
+
+        //System.out.println(targetFoodX + " " + targetFoodY);
         //double angles = 0;
 
         // displacement on x axis
