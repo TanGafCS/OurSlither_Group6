@@ -131,7 +131,7 @@ final class MySlitherJFrame extends JFrame {
 
         getContentPane().setLayout(new BorderLayout());
 
-        canvas = new MySlitherCanvas(this);
+        canvas = new MySlitherCanvas(this, model);
         player = canvas.mouseInput;
 
         // === upper row ===

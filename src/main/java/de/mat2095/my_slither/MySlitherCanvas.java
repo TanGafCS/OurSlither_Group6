@@ -70,7 +70,7 @@ final class MySlitherCanvas extends JPanel {
         }
     }
 
-    MySlitherCanvas(MySlitherJFrame view) {
+    MySlitherCanvas(MySlitherJFrame view, MySlitherModel model) {
         super();
         this.view = view;
 
@@ -249,9 +249,30 @@ final class MySlitherCanvas extends JPanel {
 
                 double snakeL = model.getSnakeLength(snake.body.size(), snake.getFam());
                 System.out.println(snakeL);
-                if(snakeL > 110) {
-                    OWN_SNAKE_COLOR = new Color(0xff0000);
-                    OWN_SNAKE_BODY_COLOR = new Color(0xff0000);
+
+                if(snakeL > 30 && model.snake == snake) {
+                    OWN_SNAKE_COLOR = new Color(0xffe6e6);
+                    OWN_SNAKE_BODY_COLOR = new Color(0xff9999);
+                }
+
+                if(snakeL > 60 && model.snake == snake){
+                    OWN_SNAKE_COLOR = new Color(0xff9999);
+                    OWN_SNAKE_BODY_COLOR = new Color(0xff4d4d);
+                }
+
+                if(snakeL > 90 && model.snake == snake){
+                    OWN_SNAKE_COLOR = new Color(0xff4d4d);
+                    OWN_SNAKE_BODY_COLOR = new Color(0xe60000);
+                }
+
+                if(snakeL > 120 && model.snake == snake){
+                    OWN_SNAKE_COLOR = new Color(0xe60000);
+                    OWN_SNAKE_BODY_COLOR = new Color(0x800000);
+                }
+
+                if(snakeL > 150 && model.snake == snake){
+                    OWN_SNAKE_COLOR = new Color(0x800000);
+                    OWN_SNAKE_BODY_COLOR = new Color(0x1a0000);
                 }
 
                 g.setColor(NAME_SHADOW_COLOR);
