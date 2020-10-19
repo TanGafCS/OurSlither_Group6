@@ -260,6 +260,11 @@ final class MySlitherCanvas extends JPanel {
                 System.out.println(snakeL);
 
                 //CODE TO CHANGE THE COLOUR OF THE SNAKE AS IT GETS LONGER
+                if(snakeL <= 30 && model.snake == snake) {
+                    OWN_SNAKE_COLOR = new Color(0x39AFFF);
+                    OWN_SNAKE_BODY_COLOR = new Color(0xA5C261);
+                }
+
                 if(snakeL > 30 && model.snake == snake) {
                     OWN_SNAKE_COLOR = new Color(0xffe6e6);
                     OWN_SNAKE_BODY_COLOR = new Color(0xff9999);
