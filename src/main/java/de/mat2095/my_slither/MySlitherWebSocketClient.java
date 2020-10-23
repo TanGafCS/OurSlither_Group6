@@ -134,7 +134,11 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
         if (!foundOptimalFood)
         {
-            System.out.println("we're rnning");
+            targetFoodX = oldTargetFoodX;
+            targetFoodY = oldTargetFoodY;
+        }
+        else if (view.isPythagoreanEnabled())
+        {
             targetFoodX = oldTargetFoodX;
             targetFoodY = oldTargetFoodY;
         }

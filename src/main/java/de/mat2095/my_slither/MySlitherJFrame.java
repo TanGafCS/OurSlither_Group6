@@ -91,7 +91,8 @@ final class MySlitherJFrame extends JFrame {
     private final JComboBox<String> snake;
     private final JCheckBox useRandomServer;
     private final JToggleButton connect, botToggleButton;
-    private final JLabel rank, kills;
+    private final JRadioButton pythagorasToggleButton;
+    private final JLabel rank, kills, pythLabel;
     private final JSplitPane rightSplitPane, fullSplitPane;
     private final JTextArea log;
     private final JScrollBar logScrollBar;
@@ -109,6 +110,7 @@ final class MySlitherJFrame extends JFrame {
 
     // Extension instance variables
     private boolean botEnabled;
+    private boolean pythagoreanEnabled;
 
     MySlitherJFrame() {
         super("MySlither");
@@ -182,8 +184,11 @@ final class MySlitherJFrame extends JFrame {
         botToggleButton = new JToggleButton();
         botToggleButton.addActionListener(a -> {toggleBotEnabled();});
 
-        rank = new JLabel();
+        pythagorasToggleButton = new JRadioButton();
+        pythagorasToggleButton.addActionListener(a -> {togglePythagoreanEnabled();});
 
+        rank = new JLabel();
+        pythLabel = new JLabel();
         kills = new JLabel();
 
         settings.add(new JLabel("server:"),
@@ -215,6 +220,10 @@ final class MySlitherJFrame extends JFrame {
         // Extension
         settings.add(botToggleButton,
             new GridBagConstraints(6, 1, 1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 60, 2, 2), 0, 0));
+        settings.add(pythagorasToggleButton,
+            new GridBagConstraints(7, 1, 1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 0, 2, 2), 0, 0));
+        settings.add(pythLabel,
+            new GridBagConstraints(8, 1, 1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(2, 0, 2, 2), 0, 0));
 
         JComponent upperRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         upperRow.add(settings);
@@ -287,6 +296,7 @@ final class MySlitherJFrame extends JFrame {
 
         // Set bot mode to disabled
         botEnabled = false;
+        pythagoreanEnabled = false;
 
         updateTimer = new Timer();
         updateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -423,6 +433,7 @@ final class MySlitherJFrame extends JFrame {
             this.model = model;
             rank.setText(null);
             kills.setText(null);
+            pythLabel.setText("Toggle bot function");
         }
     }
 
@@ -452,9 +463,24 @@ final class MySlitherJFrame extends JFrame {
         setStatus(status);
     }
 
+    /**
+     * This function toggles botEnabled's state.
+     */
+    public void togglePythagoreanEnabled()
+    {
+        pythagoreanEnabled = !pythagoreanEnabled;
+        setStatus(status);
+    }
+    
+
     public boolean isBotEnabled()
     {
         return botEnabled;
+    }
+
+    public boolean isPythagoreanEnabled()
+    {
+        return pythagoreanEnabled;
     }
 
     private enum Status {
