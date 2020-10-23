@@ -257,7 +257,6 @@ final class MySlitherCanvas extends JPanel {
                 String lengthText = "" + model.getSnakeLength(snake.body.size(), snake.getFam());
 
                 double snakeL = model.getSnakeLength(snake.body.size(), snake.getFam());
-                System.out.println(snakeL);
 
                 //CODE TO CHANGE THE COLOUR OF THE SNAKE AS IT GETS LONGER
                 if(snakeL <= 30 && model.snake == snake) {
